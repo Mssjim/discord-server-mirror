@@ -1,0 +1,22 @@
+{
+  "name": "discord-server-mirror",
+  "version": "1.0.0",
+  "description": "Mirror discord server messages to another server",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mssjim/discord-server-mirror.git"
+  },
+  "author": "Mssjim",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Mssjim/discord-server-mirror/issues"
+  },
+  "homepage": "https://github.com/Mssjim/discord-server-mirror#readme",
+  "dependencies": {
+    "selfo.js": "^1.1.0"
+  }
+}
