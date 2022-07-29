@@ -51,7 +51,7 @@ const sendMessage = (msg) => {
                 emojis = reader.channels.get(writeChannel).guild.emojis.array().map(x => x.toString()).filter(x => !x.startsWith('<a'));
             }
         });
-        bot.on('message', (msg) => {
+        bot.on('message', (msg) => { // TODO Replace mentions with actual bot
             if(msg.author.bot || msg.author.id == reader.user.id) return;
             if(i == 0 && msg.channel.id == readChannel)
                 sendMessage(msg);
