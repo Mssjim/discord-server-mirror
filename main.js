@@ -21,11 +21,16 @@ const sendMessage = (msg) => {
         }
     }
 
-    if(!msg.content) return;
+    if(!msg.content && (!msg.attachments || !sendAttachments)) return;
 
     bot.channels.get(writeChannel).startTyping();
     setTimeout(() => {
-        bot.channels.get(writeChannel).send(msg.content);
+        if(sendAttachments)
+            bot.channels.get(writeChannel).send(msg.content, {
+                files: msg.attachments.map(x => x.url)
+            });
+        else
+            bot.channels.get(writeChannel).send(msg.content);
         bot.channels.get(writeChannel).stopTyping();
     }, msg.content.replace(/<a?:.+?:\d+>/, '').length * 280);
 }
