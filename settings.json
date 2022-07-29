@@ -2,6 +2,7 @@
     "readChannel": "",
     "writeChannel": "",
     "sendAttachments": true,
+    "convertEmojis": true,
     "tokens": [
         ""
     ]

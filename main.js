@@ -1,8 +1,9 @@
 const { Client } = require('selfo.js');
-const { tokens, readChannel, writeChannel, sendAttachments } = require('./settings.json');
+const { tokens, readChannel, writeChannel, sendAttachments, convertEmojis } = require('./settings.json');
 
 let bots = [];
 let reader;
+let emojis;
 
 const sendMessage = (msg) => {
     let bot = bots.find(x => x.echo.includes(msg.author.id));
@@ -12,11 +13,21 @@ const sendMessage = (msg) => {
         bot = bots[random];
     }
 
+    if(convertEmojis) {
+        msg.content = msg.content.replace(/<a?:.+?:\d+>/g, '<EMOJI-HERE>');
+    
+        while(msg.content.includes('<EMOJI-HERE>')) {
+            msg.content = msg.content.replace('<EMOJI-HERE>', emojis[Math.floor(Math.random() * emojis.length)] || ':pray:');
+        }
+    }
+
+    if(!msg.content) return;
+
     bot.channels.get(writeChannel).startTyping();
     setTimeout(() => {
         bot.channels.get(writeChannel).send(msg.content);
         bot.channels.get(writeChannel).stopTyping();
-    }, msg.content.length * 280);
+    }, msg.content.replace(/<a?:.+?:\d+>/, '').length * 280);
 }
 
 (async() => {
@@ -30,7 +41,10 @@ const sendMessage = (msg) => {
                 echo: [],
                 ...bot
             });
-            if(i == 0) reader = bot;
+            if(i == 0) {
+                reader = bot;
+                emojis = reader.channels.get(writeChannel).guild.emojis.array().map(x => x.toString()).filter(x => !x.startsWith('<a'));
+            }
         });
         bot.on('message', (msg) => {
             if(msg.author.bot || msg.author.id == reader.user.id) return;
