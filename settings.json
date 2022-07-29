@@ -1,4 +1,7 @@
 {
+    "readChannel": "",
+    "writeChannel": "",
+    "sendAttachments": true,
     "tokens": [
         ""
     ]
