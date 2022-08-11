@@ -1,11 +1,14 @@
 const { Client } = require('selfo.js');
-const { tokens, readChannel, writeChannel, showAuthor, sendAttachments, convertEmojis } = require('./settings.json');
+const { tokens, readChannel, writeChannel, twosided, sendAttachments, convertEmojis, showAuthor } = require('./settings.json');
 
 let bots = [];
 let reader;
-let emojis;
+let emojisRead, emojisWrite;
 
-const sendMessage = (msg) => {
+const sendMessage = (msg, channelId) => {
+    // Ignore messages from bots
+    if(bots.some(bot => bot.user.id == msg.author.id)) return;
+
     let bot = bots.find(x => x.echo.includes(msg.author.id));
     if(!bot) {
         const random = Math.floor(Math.random() * bots.length);
@@ -14,6 +17,7 @@ const sendMessage = (msg) => {
     }
 
     if(convertEmojis) {
+        const emojis = channelId == readChannel ? emojisRead : emojisWrite;
         msg.content = msg.content.replace(/<a?:.+?:\d+>/g, '<EMOJI-HERE>');
     
         while(msg.content.includes('<EMOJI-HERE>')) {
@@ -21,20 +25,20 @@ const sendMessage = (msg) => {
         }
     }
 
-    if(showAuthor)
+    if(showAuthor && channelId == writeChannel)
         msg.content = `\`${msg.author.tag} (${msg.author.id})\`: ${msg.content}`;
 
     if(!msg.content && (!msg.attachments || !sendAttachments)) return;
 
-    bot.channels.get(writeChannel).startTyping();
+    bot.channels.get(channelId).startTyping();
     setTimeout(() => {
         if(sendAttachments)
-            bot.channels.get(writeChannel).send(msg.content, {
+            bot.channels.get(channelId).send(msg.content, {
                 files: msg.attachments.map(x => x.url)
             });
         else
-            bot.channels.get(writeChannel).send(msg.content);
-        bot.channels.get(writeChannel).stopTyping();
+            bot.channels.get(channelId).send(msg.content);
+        bot.channels.get(channelId).stopTyping();
     }, msg.content.replace(/<a?:.+?:\d+>/, '').length * 280);
 }
 
@@ -51,13 +55,17 @@ const sendMessage = (msg) => {
             });
             if(i == 0) {
                 reader = bot;
-                emojis = reader.channels.get(writeChannel).guild.emojis.array().map(x => x.toString()).filter(x => !x.startsWith('<a'));
+                if(convertEmojis) {
+                    emojisWrite = reader.channels.get(writeChannel).guild.emojis.array().map(x => x.toString()).filter(x => !x.startsWith('<a'));
+                    emojisRead = reader.channels.get(readChannel).guild.emojis.array().map(x => x.toString()).filter(x => !x.startsWith('<a'));
+                }
             }
         });
         bot.on('message', (msg) => { // TODO Replace mentions with actual bot
             if(msg.author.bot || msg.author.id == reader.user.id) return;
-            if(i == 0 && msg.channel.id == readChannel)
-                sendMessage(msg);
+            const channels = twosided ? [readChannel, writeChannel] : [readChannel];
+            if(i == 0 && channels.includes(msg.channel.id))
+                sendMessage(msg, msg.channel.id == writeChannel ? readChannel : writeChannel);
         });
         
         await bot.login(tokens[i]);
