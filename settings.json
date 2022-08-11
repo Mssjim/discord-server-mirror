@@ -1,6 +1,7 @@
 {
     "readChannel": "",
     "writeChannel": "",
+    "showAuthor": false,
     "sendAttachments": true,
     "convertEmojis": true,
     "tokens": [

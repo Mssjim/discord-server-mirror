@@ -1,5 +1,5 @@
 const { Client } = require('selfo.js');
-const { tokens, readChannel, writeChannel, sendAttachments, convertEmojis } = require('./settings.json');
+const { tokens, readChannel, writeChannel, showAuthor, sendAttachments, convertEmojis } = require('./settings.json');
 
 let bots = [];
 let reader;
@@ -20,6 +20,9 @@ const sendMessage = (msg) => {
             msg.content = msg.content.replace('<EMOJI-HERE>', emojis[Math.floor(Math.random() * emojis.length)] || ':pray:');
         }
     }
+
+    if(showAuthor)
+        msg.content = `\`${msg.author.tag} (${msg.author.id})\`: ${msg.content}`;
 
     if(!msg.content && (!msg.attachments || !sendAttachments)) return;
 
