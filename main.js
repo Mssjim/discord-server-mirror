@@ -1,5 +1,5 @@
 const { Client } = require('selfo.js');
-const { tokens, readChannel, writeChannel, twosided, sendAttachments, convertEmojis, showAuthor } = require('./settings.json');
+const { tokens, readChannel, writeChannel, twoSided, sendAttachments, convertEmojis, showAuthor } = require('./settings.json');
 
 let bots = [];
 let reader;
@@ -63,7 +63,7 @@ const sendMessage = (msg, channelId) => {
         });
         bot.on('message', (msg) => { // TODO Replace mentions with actual bot
             if(msg.author.bot || msg.author.id == reader.user.id) return;
-            const channels = twosided ? [readChannel, writeChannel] : [readChannel];
+            const channels = twoSided ? [readChannel, writeChannel] : [readChannel];
             if(i == 0 && channels.includes(msg.channel.id))
                 sendMessage(msg, msg.channel.id == writeChannel ? readChannel : writeChannel);
         });
