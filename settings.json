@@ -1,7 +1,6 @@
 {
     "readChannel": "",
     "writeChannel": "",
-    "twosided": true,
     "twoSided": true,
     "sendAttachments": true,
     "convertEmojis": true,
