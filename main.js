@@ -77,11 +77,7 @@ run();
 
 process.on('uncaughtException', (err) => {
     console.log('\x1b[31m==================================================\x1b[0m');
-    console.log('\x1b[31mCRASHED\x1b[0m - Trying to restart...');
+    console.log('\x1b[31mCRASHED\x1b[0m');
     console.log(err);
     console.log('\x1b[31m==================================================\x1b[0m');
-
-    setTimeout(() => {
-        run();
-    }, 3000);
 });
