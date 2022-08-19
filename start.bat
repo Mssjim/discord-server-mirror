@@ -1,3 +1,3 @@
 :start
-npm run start
+node main.js
 goto start
