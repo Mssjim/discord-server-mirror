@@ -42,7 +42,7 @@ const sendMessage = (msg, channelId) => {
     }, msg.content.replace(/<a?:.+?:\d+>/, '').length * 280);
 }
 
-(async() => {
+const run = async() => {
     console.log('Starting bots...');
     console.log('\x1b[36m==================================================\x1b[0m');
     for(let i=0; i<tokens.length; i++) {
@@ -71,4 +71,17 @@ const sendMessage = (msg, channelId) => {
         await bot.login(tokens[i]);
     }
     console.log('\x1b[36m==================================================\x1b[0m');
-})();
+};
+
+run();
+
+process.on('uncaughtException', (err) => {
+    console.log('\x1b[31m==================================================\x1b[0m');
+    console.log('\x1b[31mCRASHED\x1b[0m - Trying to restart...');
+    console.log(err);
+    console.log('\x1b[31m==================================================\x1b[0m');
+
+    setTimeout(() => {
+        run();
+    }, 3000);
+});

@@ -19,7 +19,8 @@ Node.js 12.x or higher with npm/yarn installed.
 • Join with the same account on both servers. (You can use more than one account if you want)  
 • Get one channel id from each server. ("Read" and "Write" channels)  
 • Edit "settings.json" with your account token and channel ids.  
-• Run the bot. (You can use `npm start` or run the `run.bat` file)  
+• Run `npm install` or `yarn install` to install dependencies. (You can also run the `setup.bat` file if you are on Windows)
+• Run the bot with `npm start` or `yarn start`. (You can also run the `start.bat` file if you are on Windows) 
 
 ## Settings
 You can edit the settings.json file with your personal preferences.
