@@ -31,6 +31,7 @@ You can edit the settings.json file with your personal preferences.
 `sendAttachments` - If true, attachments will be sent. If false, attachments will be ignored, and only text will be sent.  
 `convertEmojis` - If true, emojis will be converted to target server emojis. If false, emojis will not be converted (This is useful if account has nitro enabled).  
 `showAuthor` - If true, the message will contain the author tag and id. If false, will send only the message content.  
+`typing` - If true, the self will simulate the message typing time before sending.  
 `tokens` - An array of account tokens. You need to have at least one token.  
 Multiple tokens can be separated by commas:
 ```json

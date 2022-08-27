@@ -1,45 +1,69 @@
 const { Client } = require('selfo.js');
-const { tokens, readChannel, writeChannel, twoSided, sendAttachments, convertEmojis, showAuthor } = require('./settings.json');
+const { tokens, readChannel, writeChannel, twoSided, sendAttachments, convertEmojis, showAuthor, typing } = require('./settings.json');
 
+let queue = [];
 let bots = [];
 let reader;
 let emojisRead, emojisWrite;
 
-const sendMessage = (msg, channelId) => {
-    // Ignore messages from bots
-    if(bots.some(bot => bot.user.id == msg.author.id)) return;
-
-    let bot = bots.find(x => x.echo.includes(msg.author.id));
-    if(!bot) {
-        const random = Math.floor(Math.random() * bots.length);
-        bots[random].echo.push(msg.author.id);
-        bot = bots[random];
-    }
-
-    if(convertEmojis) {
-        const emojis = channelId == readChannel ? emojisRead : emojisWrite;
-        msg.content = msg.content.replace(/<a?:.+?:\d+>/g, '<EMOJI-HERE>');
-    
-        while(msg.content.includes('<EMOJI-HERE>')) {
-            msg.content = msg.content.replace('<EMOJI-HERE>', emojis[Math.floor(Math.random() * emojis.length)] || ':pray:');
+function enqueue(msg, channelId) {
+    let fn = sendMessage.bind(null, msg, channelId);
+    if (queue[0] === undefined) {
+        function next() {
+            queue.shift();
+            queue[0] && queue[0]().finally(next);
         }
+        fn().finally(next);
     }
+    queue.push(fn);
+}
 
-    if(showAuthor && channelId == writeChannel)
-        msg.content = `\`${msg.author.tag} (${msg.author.id})\`: ${msg.content}`;
-
-    if(!msg.content && (!msg.attachments || !sendAttachments)) return;
-
-    bot.channels.get(channelId).startTyping();
-    setTimeout(() => {
-        if(sendAttachments)
-            bot.channels.get(channelId).send(msg.content, {
-                files: msg.attachments.map(x => x.url)
-            });
-        else
-            bot.channels.get(channelId).send(msg.content);
-        bot.channels.get(channelId).stopTyping();
-    }, msg.content.replace(/<a?:.+?:\d+>/, '').length * 280);
+const sendMessage = async(msg, channelId) => {
+    return new Promise(resolve => {
+        // Ignore messages from bots
+        if(bots.some(bot => bot.user.id == msg.author.id)) return resolve();
+    
+        let bot = bots.find(x => x.echo.includes(msg.author.id));
+        if(!bot) {
+            const random = Math.floor(Math.random() * bots.length);
+            bots[random].echo.push(msg.author.id);
+            bot = bots[random];
+        }
+    
+        if(convertEmojis) {
+            const emojis = channelId == readChannel ? emojisRead : emojisWrite;
+            msg.content = msg.content.replace(/<a?:.+?:\d+>/g, '<EMOJI-HERE>');
+        
+            while(msg.content.includes('<EMOJI-HERE>')) {
+                msg.content = msg.content.replace('<EMOJI-HERE>', emojis[Math.floor(Math.random() * emojis.length)] || ':pray:');
+            }
+        }
+    
+        
+        if(!msg.content && (!msg.attachments || !sendAttachments)) return resolve();
+        
+        typing && bot.channels.get(channelId).startTyping();
+        
+        const timeout = typing ? Math.floor(Math.random() * 120) + 200 : 0;
+        
+        setTimeout(() => {
+            try {
+                if(showAuthor && channelId == writeChannel)
+                    msg.content = `\`${msg.author.tag} (${msg.author.id})\`: ${msg.content}`;
+                if(sendAttachments)
+                    bot.channels.get(channelId).send(msg.content, {
+                        files: msg.attachments.map(x => x.url)
+                    });
+                else
+                    bot.channels.get(channelId).send(msg.content);
+            } catch(e) {
+                console.log(e);
+            } finally {
+                bot.channels.get(channelId).stopTyping();
+                resolve();
+            }
+        }, msg.content.replace(/<a?:.+?:\d+>/g, '').length * timeout);
+    });
 }
 
 const run = async() => {
@@ -65,7 +89,7 @@ const run = async() => {
             if(msg.author.bot || msg.author.id == reader.user.id) return;
             const channels = twoSided ? [readChannel, writeChannel] : [readChannel];
             if(i == 0 && channels.includes(msg.channel.id))
-                sendMessage(msg, msg.channel.id == writeChannel ? readChannel : writeChannel);
+                enqueue(msg, msg.channel.id == writeChannel ? readChannel : writeChannel);
         });
         
         await bot.login(tokens[i]);
