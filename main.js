@@ -6,7 +6,7 @@ let bots = [];
 let reader;
 let emojisRead, emojisWrite;
 
-function enqueue(msg, channelId) {
+function enqueue(msg, channelId) { // TODO Make one queue for each channel
     let fn = sendMessage.bind(null, msg, channelId);
     if (queue[0] === undefined) {
         function next() {
@@ -32,10 +32,39 @@ const sendMessage = async(msg, channelId) => {
     
         if(convertEmojis) {
             const emojis = channelId == readChannel ? emojisRead : emojisWrite;
-            msg.content = msg.content.replace(/<a?:.+?:\d+>/g, '<EMOJI-HERE>');
-        
-            while(msg.content.includes('<EMOJI-HERE>')) {
-                msg.content = msg.content.replace('<EMOJI-HERE>', emojis[Math.floor(Math.random() * emojis.length)] || ':pray:');
+            
+            if(convertEmojis == 2 && channelId == writeChannel) {
+                const hasEmoteRegex = /<a?:.+?:\d+>/gm;
+                let emojiCount = 0;
+                let emojisUrls = "";
+                msg.emojis = msg.content.match(hasEmoteRegex);
+
+                if(msg.emojis) {
+                    msg.content = msg.content.replace(/<a?:.+?:\d+>/gm, '<EMOJI-HERE>');
+                    while(msg.content.includes('<EMOJI-HERE>')) {
+                        msg.content = msg.content.replace('<EMOJI-HERE>', `\`<Emoji ${++emojiCount}>\``);
+                    }
+    
+                    for(let i=0; i< msg.emojis?.length; i++) {
+                        let emoji = msg.emojis[i];
+
+                        if(emoji.startsWith('<a:')) {
+                            emoji = emoji.substring(emoji.lastIndexOf(':') + 1, emoji.length - 1);
+                            emojisUrls += "\n`"+(i+1)+"`" + "https://cdn.discordapp.com/emojis/" + emoji + ".gif?v=1";
+                        } else {
+                            emoji = emoji.substring(emoji.lastIndexOf(':') + 1, emoji.length - 1);
+                            emojisUrls += "\n`"+(i+1)+"`" + "https://cdn.discordapp.com/emojis/" + emoji + ".png?v=1";
+                        }
+                    }
+    
+                    if(emojisUrls)
+                        msg.content = msg.content + "\n\n`<EMOJIS>`" + emojisUrls; // TODO Use another way to do this
+                }
+            } else {
+                msg.content = msg.content.replace(/<a?:.+?:\d+>/gm, '<EMOJI-HERE>');
+                while(msg.content.includes('<EMOJI-HERE>')) {
+                    msg.content = msg.content.replace('<EMOJI-HERE>', emojis[Math.floor(Math.random() * emojis.length)] || ':pray:');
+                }
             }
         }
     
@@ -62,7 +91,8 @@ const sendMessage = async(msg, channelId) => {
                 bot.channels.get(channelId).stopTyping();
                 resolve();
             }
-        }, msg.content.replace(/<a?:.+?:\d+>/g, '').length * timeout);
+        }, msg.content.replace(/<a?:.+?:\d+>/gm, '').replace(/https:\/\/cdn.discordapp.com\/emojis\/.+?v\=1/gm, '').replace(/\<Emoji \d+\>/gm, '').length * timeout);
+        // TODO xD
     });
 }
 

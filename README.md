@@ -26,23 +26,36 @@ Node.js 12.x or higher with npm/yarn installed.
 You can edit the settings.json file with your personal preferences.
 
 `readChannel` - The channel id where you read messages from.  
+
 `writeChannel` - The channel id where you write messages to.  
+
 `twoSided` - If true, messages will be mirrored between the two channels. If false, only messages from the read channel will be mirrored.  
+
 `sendAttachments` - If true, attachments will be sent. If false, attachments will be ignored, and only text will be sent.  
-`convertEmojis` - If true, emojis will be converted to target server emojis. If false, emojis will not be converted (This is useful if account has nitro enabled).  
+
+`convertEmojis` - You can choice to keep server emojis like the origin, convert server emojis to a random emoji in the target server or send the emoji image link.  
+> `0` - to keep same emoji, useful for nitro accounts.   
+> `1` - to convert.  
+> `2` - to send the image link(s).  
+
+> You can also use `false` or `true` for keep or convert emojis, respectively.  
+
 `showAuthor` - If true, the message will contain the author tag and id. If false, will send only the message content.  
+
 `typing` - If true, the self will simulate the message typing time before sending.  
+
 `tokens` - An array of account tokens. You need to have at least one token.  
-Multiple tokens can be separated by commas:
-```json
-{
-  "tokens": [
-    "token1",
-    "token2",
-    "token3"
-  ],
-}
-```
+> Multiple tokens can be separated by commas:
+> ```json
+> {
+>   "tokens": [
+>     "token1",
+>     "token2",
+>     "token3"
+>   ],
+> }
+> ```
+> *settings.json*
 
 Make sure all accounts are joined on both servers and have necessary permissions.
 

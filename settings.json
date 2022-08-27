@@ -4,6 +4,7 @@
     "twoSided": true,
     "sendAttachments": true,
     "convertEmojis": true,
+    "showAuthor": false,
     "typing": true,
     "tokens": [
         ""
