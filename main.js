@@ -1,5 +1,5 @@
 const { Client } = require('selfo.js');
-const { tokens, readChannel, writeChannel, twoSided, sendAttachments, convertEmojis, showAuthor, typing, nicknames } = require('./settings.json');
+const { tokens, readChannel, writeChannel, twoSided, sendAttachments, convertEmojis, showAuthor, showAvatar, typing, nicknames } = require('./settings.json');
 
 let queue = [];
 let bots = [];
@@ -75,7 +75,7 @@ const sendMessage = async(msg, channelId) => {
         
         const timeout = typing ? Math.floor(Math.random() * 120) + 200 : 0;
         
-        setTimeout(() => {
+        setTimeout(async() => {
             try {
                 if(showAuthor && channelId == writeChannel) {
                     if(nicknames[msg.author.id]) {
@@ -84,12 +84,24 @@ const sendMessage = async(msg, channelId) => {
                         msg.content = `\`${msg.author.tag} (${msg.author.id})\`: ${msg.content}`;
                     }
                 }
+
+                if(showAvatar && channelId == writeChannel) {
+                    const url = msg.author.avatarURL;
+                    if(url) {
+                       await bot.channels.get(channelId).send(url.replace(/size=\d+/g, "size=44")); // TODO test with gif xD
+                    } else {
+                        await bot.channels.get(channelId).send("", {
+                            files: ["./src/avatar.png"]
+                        });
+                    }
+                }
+
                 if(sendAttachments)
-                    bot.channels.get(channelId).send(msg.content, {
+                    await bot.channels.get(channelId).send(msg.content, {
                         files: msg.attachments.map(x => x.url)
                     });
                 else
-                    bot.channels.get(channelId).send(msg.content);
+                    await bot.channels.get(channelId).send(msg.content);
             } catch(e) {
                 console.log(e);
             } finally {

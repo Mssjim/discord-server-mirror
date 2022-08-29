@@ -5,6 +5,7 @@
     "sendAttachments": true,
     "convertEmojis": true,
     "showAuthor": false,
+    "showAvatar": false,
     "typing": true,
     "tokens": [
         ""

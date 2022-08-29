@@ -43,6 +43,8 @@ You can edit the settings.json file with your personal preferences.
 
 `showAuthor` - If true, the message will contain the author tag and id. If false, will send only the message content.  
 
+`showAvatar` - If true, will be displayed the author avatar before message content.  
+
 `typing` - If true, the self will simulate the message typing time before sending.  
 
 `tokens` - An array of account tokens. You need to have at least one token.  
