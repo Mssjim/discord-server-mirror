@@ -1,5 +1,5 @@
 const { Client } = require('selfo.js');
-const { tokens, readChannel, writeChannel, twoSided, sendAttachments, convertEmojis, showAuthor, typing } = require('./settings.json');
+const { tokens, readChannel, writeChannel, twoSided, sendAttachments, convertEmojis, showAuthor, typing, nicknames } = require('./settings.json');
 
 let queue = [];
 let bots = [];
@@ -77,8 +77,13 @@ const sendMessage = async(msg, channelId) => {
         
         setTimeout(() => {
             try {
-                if(showAuthor && channelId == writeChannel)
-                    msg.content = `\`${msg.author.tag} (${msg.author.id})\`: ${msg.content}`;
+                if(showAuthor && channelId == writeChannel) {
+                    if(nicknames[msg.author.id]) {
+                        msg.content = `\`${nicknames[msg.author.id]} (${Object.keys(nicknames)?.indexOf(msg.author.id) + 1})\`: ${msg.content}`
+                    } else {
+                        msg.content = `\`${msg.author.tag} (${msg.author.id})\`: ${msg.content}`;
+                    }
+                }
                 if(sendAttachments)
                     bot.channels.get(channelId).send(msg.content, {
                         files: msg.attachments.map(x => x.url)

@@ -24,6 +24,7 @@ Node.js 12.x or higher with npm/yarn installed.
 
 ## Settings
 You can edit the settings.json file with your personal preferences.
+> **`readChannel`, `writeChannel` and `tokens` are required, all other flags are optional.**
 
 `readChannel` - The channel id where you read messages from.  
 
@@ -47,17 +48,24 @@ You can edit the settings.json file with your personal preferences.
 `tokens` - An array of account tokens. You need to have at least one token.  
 > Multiple tokens can be separated by commas:
 > ```json
-> {
->   "tokens": [
->     "token1",
->     "token2",
->     "token3"
->   ],
-> }
+>"tokens": [
+>    "token1",
+>    "token2",
+>    "token3"
+>]
 > ```
 > *settings.json*
 
-Make sure all accounts are joined on both servers and have necessary permissions.
+Make sure all accounts are joined on both servers and have necessary permissions.  
+
+`nicknames` - A list with custom nicknames to show if `showAuthor` flag is true.  
+> Usage example
+```json
+"nicknames": {
+    "userId": "Nickname",
+    "userId2": "Another nickname"
+}
+```
 
 ## Contributing - bug fixes
 Contributions are welcome! Please feel free to open an issue or submit a pull request, for bug fixes or new features.
