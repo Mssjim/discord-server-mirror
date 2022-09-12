@@ -1,5 +1,5 @@
 const { Client } = require('selfo.js');
-const { tokens, readChannel, writeChannel, twoSided, sendAttachments, convertEmojis, showAuthor, showAvatar, typing, nicknames } = require('./settings.json');
+const { tokens, readChannel, writeChannel, twoSided, sendAttachments, convertEmojis, showAuthor, showAvatar, typing, ignoreWebhooks, nicknames } = require('./settings.json');
 
 let queue = [];
 let bots = [];
@@ -78,10 +78,11 @@ const sendMessage = async(msg, channelId) => {
         setTimeout(async() => {
             try {
                 if(showAuthor && channelId == writeChannel) {
+                    const webhook = msg.webhookID ? "`<WEBHOOK>` " : "";
                     if(nicknames[msg.author.id]) {
-                        msg.content = `\`${nicknames[msg.author.id]} (${Object.keys(nicknames)?.indexOf(msg.author.id) + 1})\`: ${msg.content}`
+                        msg.content = `${webhook}\`${nicknames[msg.author.id]} (${Object.keys(nicknames)?.indexOf(msg.author.id) + 1})\`: ${msg.content}`
                     } else {
-                        msg.content = `\`${msg.author.tag} (${msg.author.id})\`: ${msg.content}`;
+                        msg.content = `${webhook}\`${msg.author.tag} (${msg.author.id})\`: ${msg.content}`;
                     }
                 }
 
@@ -133,7 +134,7 @@ const run = async() => {
             }
         });
         bot.on('message', (msg) => { // TODO Replace mentions with actual bot
-            if(msg.author.bot || msg.author.id == reader.user.id) return;
+            if(ignoreWebhooks ? (msg.author.bot) : (msg.author.bot && !msg.webhookID ) || msg.author.id == reader.user.id) return;
             const channels = twoSided ? [readChannel, writeChannel] : [readChannel];
             if(i == 0 && channels.includes(msg.channel.id))
                 enqueue(msg, msg.channel.id == writeChannel ? readChannel : writeChannel);

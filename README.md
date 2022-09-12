@@ -47,6 +47,8 @@ You can edit the settings.json file with your personal preferences.
 
 `typing` - If true, the self will simulate the message typing time before sending.  
 
+`ignoreWebhooks` - If true, weebhook messages will be ignored.  
+
 `tokens` - An array of account tokens. You need to have at least one token.  
 > Multiple tokens can be separated by commas:
 > ```json
@@ -60,7 +62,7 @@ You can edit the settings.json file with your personal preferences.
 
 Make sure all accounts are joined on both servers and have necessary permissions.  
 
-`nicknames` - A list with custom nicknames to show if `showAuthor` flag is true.  
+`nicknames` - A list with custom nicknames to show at message if `showAuthor` flag is true.  
 > Usage example
 ```json
 "nicknames": {

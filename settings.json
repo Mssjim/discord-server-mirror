@@ -7,6 +7,7 @@
     "showAuthor": false,
     "showAvatar": false,
     "typing": true,
+    "ignoreWebhooks": false,
     "tokens": [
         ""
     ],
