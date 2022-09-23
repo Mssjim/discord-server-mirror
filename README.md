@@ -49,6 +49,8 @@ You can edit the settings.json file with your personal preferences.
 
 `ignoreWebhooks` - If true, weebhook messages will be ignored.  
 
+`prefix` - You can set a prefix to send messages from "writeChannel" to "readChannel", when setting a prefix, the "twoSided" flag will be automatically disabled.  
+
 `tokens` - An array of account tokens. You need to have at least one token.  
 > Multiple tokens can be separated by commas:
 > ```json
@@ -59,8 +61,10 @@ You can edit the settings.json file with your personal preferences.
 >]
 > ```
 > *settings.json*
-
-Make sure all accounts are joined on both servers and have necessary permissions.  
+> 
+> **Make sure all accounts are joined on both servers and have necessary permissions.**  
+> 
+> The first token will be used to read the messages, and the last one will be used to send messages via commands (if a "prefix" is defined).  
 
 `nicknames` - A list with custom nicknames to show at message if `showAuthor` flag is true.  
 > Usage example

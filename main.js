@@ -1,10 +1,14 @@
 const { Client } = require('selfo.js');
-const { tokens, readChannel, writeChannel, twoSided, sendAttachments, convertEmojis, showAuthor, showAvatar, typing, ignoreWebhooks, nicknames } = require('./settings.json');
+const { tokens, readChannel, writeChannel, sendAttachments, convertEmojis, showAuthor, showAvatar, typing, ignoreWebhooks, prefix, nicknames } = require('./settings.json');
+let { twoSided } = require('./settings.json');
 
 let queue = [];
 let bots = [];
 let reader;
+let writer;
 let emojisRead, emojisWrite;
+
+prefix && (twoSided = false);
 
 function enqueue(msg, channelId) { // TODO Make one queue for each channel
     let fn = sendMessage.bind(null, msg, channelId);
@@ -22,6 +26,8 @@ const sendMessage = async(msg, channelId) => {
     return new Promise(resolve => {
         // Ignore messages from bots
         if(bots.some(bot => bot.user.id == msg.author.id)) return resolve();
+        // Ignore messages from writer
+        if(writer?.user?.id == msg.author.id) return resolve();
     
         let bot = bots.find(x => x.echo.includes(msg.author.id));
         if(!bot) {
@@ -89,7 +95,7 @@ const sendMessage = async(msg, channelId) => {
                 if(showAvatar && channelId == writeChannel) {
                     const url = msg.author.avatarURL;
                     if(url) {
-                       await bot.channels.get(channelId).send(url.replace(/size=\d+/g, "size=44")); // TODO test with gif xD
+                        await bot.channels.get(channelId).send(url.replace(/size=\d+/g, "size=44")); // TODO test with gif xD
                     } else {
                         await bot.channels.get(channelId).send("", {
                             files: ["./src/avatar.png"]
@@ -120,24 +126,35 @@ const run = async() => {
     for(let i=0; i<tokens.length; i++) {
         const bot = new Client();
         bot.on('ready', () => {
-            console.log(`\x1b[33m[${i+1}/${tokens.length}]\x1b[0m ${bot.user.tag}`);
-            bots.push({
-                echo: [],
-                ...bot
-            });
+            if(prefix && i == tokens.length -1) {
+                writer = bot;
+                process.stdout.write(`\x1b[35m[W]\x1b[0m`);
+            } else {
+                bots.push({
+                    echo: [],
+                    ...bot
+                });
+                if(i != 0) process.stdout.write(`\x1b[34m[-]\x1b[0m`);
+            }
             if(i == 0) {
                 reader = bot;
                 if(convertEmojis) {
                     emojisWrite = reader.channels.get(writeChannel).guild.emojis.array().map(x => x.toString()).filter(x => !x.startsWith('<a'));
                     emojisRead = reader.channels.get(readChannel).guild.emojis.array().map(x => x.toString()).filter(x => !x.startsWith('<a'));
                 }
+                process.stdout.write(`\x1b[32m[R]\x1b[0m`);
             }
+            console.log(`\x1b[33m[${i+1}/${tokens.length}]\x1b[0m ${bot.user.tag}`);
         });
         bot.on('message', (msg) => { // TODO Replace mentions with actual bot
             if(ignoreWebhooks ? (msg.author.bot) : (msg.author.bot && !msg.webhookID ) || msg.author.id == reader.user.id) return;
             const channels = twoSided ? [readChannel, writeChannel] : [readChannel];
             if(i == 0 && channels.includes(msg.channel.id))
                 enqueue(msg, msg.channel.id == writeChannel ? readChannel : writeChannel);
+            if(prefix && i == tokens.length -1 && msg.content.toLowerCase().startsWith(prefix.toLowerCase())) {
+                const m = msg.content.substring(prefix.length).trim();
+                writer.channels.get(readChannel).send(m);
+            }
         });
         
         await bot.login(tokens[i]);

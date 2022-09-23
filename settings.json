@@ -8,6 +8,7 @@
     "showAvatar": false,
     "typing": true,
     "ignoreWebhooks": false,
+    "prefix": "",
     "tokens": [
         ""
     ],
