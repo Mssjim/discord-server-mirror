@@ -8,11 +8,15 @@
     "showAvatar": false,
     "typing": true,
     "ignoreWebhooks": false,
+    "ignoreMentions": false,
     "prefix": "",
     "tokens": [
         ""
     ],
     "nicknames": {
         "": ""
-    }
+    },
+    "blacklist": [
+        ""
+    ]
 }

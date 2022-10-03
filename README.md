@@ -49,6 +49,8 @@ You can edit the settings.json file with your personal preferences.
 
 `ignoreWebhooks` - If true, weebhook messages will be ignored.  
 
+`ignoreMentions` - If true, all mentions in the message will be removed.  
+
 `prefix` - You can set a prefix to send messages from "writeChannel" to "readChannel", when setting a prefix, the "twoSided" flag will be automatically disabled.  
 
 `tokens` - An array of account tokens. You need to have at least one token.  
@@ -68,12 +70,22 @@ You can edit the settings.json file with your personal preferences.
 
 `nicknames` - A list with custom nicknames to show at message if `showAuthor` flag is true.  
 > Usage example
-```json
-"nicknames": {
-    "userId": "Nickname",
-    "userId2": "Another nickname"
-}
-```
+>```json
+>"nicknames": {
+>    "user1Id": "Nickname",
+>    "user2Id": "Another nickname"
+>}
+>```
+
+>`blacklist` - A list with blacklisted words. If the message >includes any blacklisted word, the message will not be mirrored.  
+> Usage example
+>```json
+>"blacklist": [
+>    "word",
+>    "word2",
+>    "word3"
+>]
+>```
 
 ## Contributing - bug fixes
 Contributions are welcome! Please feel free to open an issue or submit a pull request, for bug fixes or new features.

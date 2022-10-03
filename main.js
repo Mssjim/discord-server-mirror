@@ -1,5 +1,5 @@
 const { Client } = require('selfo.js');
-const { tokens, readChannel, writeChannel, sendAttachments, convertEmojis, showAuthor, showAvatar, typing, ignoreWebhooks, prefix, nicknames } = require('./settings.json');
+const { tokens, readChannel, writeChannel, sendAttachments, convertEmojis, showAuthor, showAvatar, typing, ignoreWebhooks, ignoreMentions, prefix, nicknames, blacklist } = require('./settings.json');
 let { twoSided } = require('./settings.json');
 
 let queue = [];
@@ -149,8 +149,14 @@ const run = async() => {
         bot.on('message', (msg) => { // TODO Replace mentions with actual bot
             if(ignoreWebhooks ? (msg.author.bot) : (msg.author.bot && !msg.webhookID ) || msg.author.id == reader.user.id) return;
             const channels = twoSided ? [readChannel, writeChannel] : [readChannel];
-            if(i == 0 && channels.includes(msg.channel.id))
-                enqueue(msg, msg.channel.id == writeChannel ? readChannel : writeChannel);
+            if(i == 0 && channels.includes(msg.channel.id)) {
+                // Mentions
+                if(ignoreMentions) {
+                    msg.content = msg.content.replace(/<@!?\d+>/g, '');
+                }
+                if(msg.content && !blacklist.includes(msg.content.toLowerCase()))
+                    enqueue(msg, msg.channel.id == writeChannel ? readChannel : writeChannel);
+            }
             if(prefix && i == tokens.length -1 && msg.content.toLowerCase().startsWith(prefix.toLowerCase())) {
                 const m = msg.content.substring(prefix.length).trim();
                 writer.channels.get(readChannel).send(m);
