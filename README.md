@@ -26,9 +26,11 @@ Node.js 12.x or higher with npm/yarn installed.
 You can edit the settings.json file with your personal preferences.
 > **`readChannel`, `writeChannel` and `tokens` are required, all other flags are optional.**
 
-`readChannel` - The channel id where you read messages from.  
+`readChannel` - The channel id where you read messages from.
+> You can also pass an array of channel ids to read messages from multiple channels  
 
 `writeChannel` - The channel id where you write messages to.  
+> You can also pass an array of channel ids to write messages to multiple channels  
 
 `twoSided` - If true, messages will be mirrored between the two channels. If false, only messages from the read channel will be mirrored.  
 
