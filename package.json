@@ -17,6 +17,6 @@
   },
   "homepage": "https://github.com/Mssjim/discord-server-mirror#readme",
   "dependencies": {
-    "selfo.js": "^1.1.0"
+    "selfo.js": "^1.1.1"
   }
 }
