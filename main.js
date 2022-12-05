@@ -159,6 +159,7 @@ const run = async() => {
                 // Mentions
                 if(ignoreMentions) {
                     msg.content = msg.content.replace(/<@!?\d+>/g, '');
+                    msg.content = msg.content.replace(/<@&!?\d+>/g, '');
                 }
                 if(msg.content && !blacklist.includes(msg.content.toLowerCase())) {
                     // Send to respective channel

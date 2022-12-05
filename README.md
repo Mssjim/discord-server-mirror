@@ -51,7 +51,7 @@ You can edit the settings.json file with your personal preferences.
 
 `ignoreWebhooks` - If true, weebhook messages will be ignored.  
 
-`ignoreMentions` - If true, all mentions in the message will be removed.  
+`ignoreMentions` - If true, all mentions in the message will be removed. (member and role mentions)  
 
 `prefix` - You can set a prefix to send messages from "writeChannel" to "readChannel", when setting a prefix, the "twoSided" flag will be automatically disabled.  
 
