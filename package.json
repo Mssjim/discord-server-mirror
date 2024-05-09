@@ -1,10 +1,10 @@
 {
   "name": "discord-server-mirror",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Mirror discord server messages to another server",
   "main": "main.js",
   "scripts": {
-    "start": "npm i && node ./main.js"
+    "start": "npm update && node ./main.js"
   },
   "repository": {
     "type": "git",

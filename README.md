@@ -18,9 +18,12 @@ Node.js 12.x or higher with npm/yarn installed.
 ## How to use
 • Join with the same account on both servers. (You can use more than one account if you want)  
 • Get one channel id from each server. ("Read" and "Write" channels)  
-• Edit "settings.json" with your account token and channel ids.  
-• Run `npm install` or `yarn install` to install dependencies. (You can also run the `setup.bat` file if you are on Windows)
-• Run the bot with `npm start` or `yarn start`. (You can also run the `start.bat` file if you are on Windows) 
+• Add your account token and channels IDs to "settings.json" file.  
+• Run the `start.bat` or `start.sh` file, at Windows or Linux, respectively.
+
+Or run the bot manually:
+> • Running `npm start` or `yarn start` to update dependencies and start the bot.  
+> • Or do by yourself using `npm i` or `yarn` to install dependencies and `node main.js` to start the script.
 
 ## Settings
 You can edit the settings.json file with your personal preferences.
@@ -88,6 +91,21 @@ You can edit the settings.json file with your personal preferences.
 >    "word3"
 >]
 >```
+
+## FAQ
+**Q: How can I get the channel id?**
+> A: Right-click on the channel and click "Copy ID".
+
+**Q: How can I get the account token?**
+> A: You can get the token by pressing `Ctrl + Shift + I` in Discord, going to the "Network" tab, filter by "Fetch/XHR" and click on any successful request. The token will be in the "Request Headers" at the "Authorization" field.
+
+**Q: Nothing happens when I run the script.**
+> A: Make sure you have the correct permissions on both servers and the correct channel ids in the settings.json file. Also remember that the bot will not mirror messages from itself or other bots.
+
+**Q: How can I run the script in the background?**
+> A: You can use a process manager like PM2 to run the script in the background.
+
+### Another questions? Feel free to open an issue.
 
 ## Contributing - bug fixes
 Contributions are welcome! Please feel free to open an issue or submit a pull request, for bug fixes or new features.

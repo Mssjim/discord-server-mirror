@@ -10,6 +10,7 @@
     "ignoreWebhooks": false,
     "ignoreMentions": false,
     "prefix": "",
+    "log": true,
     "tokens": [
         ""
     ],
